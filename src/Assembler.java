@@ -8,7 +8,7 @@ public class Assembler {
     private final ArrayList<String> listingFile;
     private final ArrayList<String> loaderFile;
 
-    
+    // Constructor initializes opcode map and reads input file
     public Assembler(String sourceFile) {
         this.opcodeMap = OpCode.getOpCodes();
         this.instructionList = FileHandling.readInput(sourceFile);
@@ -47,7 +47,7 @@ public class Assembler {
 
         try {
             String[] params = instruction[1].split(",");
-
+            
             // Enforce limits on parameter counts and validate first parameter range
             switch (instruction[0]) {
                 case "LDX":
@@ -83,6 +83,10 @@ public class Assembler {
                 case "AMR": case "SMR": case "JGE":
                     register = leftPad(Integer.toBinaryString(Integer.parseInt(params[0])), 2, '0');
                     index = leftPad(Integer.toBinaryString(Integer.parseInt(params[1])), 2, '0');
+                    if(Integer.parseInt(params[2])>31) {
+                    	System.out.println("address out of bound");
+                    	return "fail";
+                    }
                     address = leftPad(Integer.toBinaryString(Integer.parseInt(params[2])), 5, '0');
                     indirectFlag = (params.length == 4 && params[3].equals("1")) ? "1" : "0";
                     break;
@@ -105,6 +109,10 @@ public class Assembler {
                 case "JNE": case "ORR": case "JMA": case "AND": case "JSR": case "TRR":
                     register = "00";
                     index = leftPad(Integer.toBinaryString(Integer.parseInt(params[0])), 2, '0');
+                    if(Integer.parseInt(params[1])>31) {
+                    	System.out.println("address out of bound");
+                    	return "fail";
+                    }
                     address = leftPad(Integer.toBinaryString(Integer.parseInt(params[1])), 5, '0');
                     if(params.length==3 && params[2].equals("1")) {
                     	indirectFlag ="1";
@@ -125,7 +133,8 @@ public class Assembler {
             System.out.println("Error parsing instruction: " + String.join(" ", instruction));
             return "Fail";
         }
-//        	System.out.println(indirectFlag);
+
+        //        	System.out.println(indirectFlag);
         return binaryOpcode + register + index + indirectFlag + address;
     }
 
