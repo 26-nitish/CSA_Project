@@ -8,7 +8,7 @@ public class Assembler {
     private final ArrayList<String> listingFile;
     private final ArrayList<String> loaderFile;
 
-    // Constructor initializes opcode map and reads input file
+    
     public Assembler(String sourceFile) {
         this.opcodeMap = OpCode.getOpCodes();
         this.instructionList = FileHandling.readInput(sourceFile);
